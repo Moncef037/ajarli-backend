@@ -1,0 +1,5 @@
+*
+!public/
+!public/ajrli_machines/
+!public/ajrli_machines/**
+!.gitignore
