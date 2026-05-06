@@ -39,8 +39,14 @@ RUN sed -ri -e 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf /e
 # Enable Apache mod_rewrite for Laravel routing
 RUN a2enmod rewrite
 
+# Disable conflicting MPMs and ensure only prefork is active for mod_php
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.conf \
+    /etc/apache2/mods-enabled/mpm_event.load \
+    /etc/apache2/mods-enabled/mpm_worker.conf \
+    /etc/apache2/mods-enabled/mpm_worker.load
+
 # Expose port 80 (Render maps this automatically)
 EXPOSE 80
 
-# Start Apache in the foreground
-CMD ["apache2-foreground"]
+# Start Apache in the foreground, ensuring conflicting MPMs are disabled first
+CMD bash -c "a2dismod mpm_event mpm_worker || true; a2enmod mpm_prefork; apache2-foreground"
