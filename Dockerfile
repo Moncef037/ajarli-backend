@@ -48,5 +48,8 @@ RUN rm -f /etc/apache2/mods-enabled/mpm_event.conf \
 # Expose port 80 (Render maps this automatically)
 EXPOSE 80
 
-# Start Apache in the foreground, ensuring conflicting MPMs are disabled first
-CMD bash -c "a2dismod mpm_event mpm_worker || true; a2enmod mpm_prefork; apache2-foreground"
+# Suppress ServerName warning
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+# Start Apache in the foreground, binding to the Railway PORT and disabling conflicting MPMs
+CMD bash -c "sed -i \"s/80/\${PORT:-80}/g\" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf; a2dismod mpm_event mpm_worker || true; a2enmod mpm_prefork; apache2-foreground"
