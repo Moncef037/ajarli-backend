@@ -45,8 +45,7 @@ RUN rm -f /etc/apache2/mods-enabled/mpm_event.conf \
     /etc/apache2/mods-enabled/mpm_worker.conf \
     /etc/apache2/mods-enabled/mpm_worker.load
 
-# Expose port 80 (Render maps this automatically)
-EXPOSE 80
+# (Removed EXPOSE 80 to prevent Railway routing conflicts)
 
 # Suppress ServerName warning
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
